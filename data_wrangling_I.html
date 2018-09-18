@@ -144,6 +144,101 @@ $(document).ready(function () {
 ##   `Pups dead @ birth` = col_integer(),
 ##   `Pups survive` = col_integer()
 ## )</code></pre>
+<pre class="r"><code>litters_data = janitor::clean_names(litters_data)
+litters_data</code></pre>
+<pre><code>## # A tibble: 49 x 8
+##    group litter_number gd0_weight gd18_weight gd_of_birth pups_born_alive
+##    &lt;chr&gt; &lt;chr&gt;              &lt;dbl&gt;       &lt;dbl&gt;       &lt;int&gt;           &lt;int&gt;
+##  1 Con7  #85                 19.7        34.7          20               3
+##  2 Con7  #1/2/95/2           27          42            19               8
+##  3 Con7  #5/5/3/83/3-3       26          41.4          19               6
+##  4 Con7  #5/4/2/95/2         28.5        44.1          19               5
+##  5 Con7  #4/2/95/3-3         NA          NA            20               6
+##  6 Con7  #2/2/95/3-2         NA          NA            20               6
+##  7 Con7  #1/5/3/83/3-~       NA          NA            20               9
+##  8 Con8  #3/83/3-3           NA          NA            20               9
+##  9 Con8  #2/95/3             NA          NA            20               8
+## 10 Con8  #3/5/2/2/95         28.5        NA            20               8
+## # ... with 39 more rows, and 2 more variables: pups_dead_birth &lt;int&gt;,
+## #   pups_survive &lt;int&gt;</code></pre>
+<pre class="r"><code>litters_pups = read_csv(file = &quot;./data/FAS_pups.csv&quot;)</code></pre>
+<pre><code>## Parsed with column specification:
+## cols(
+##   `Litter Number` = col_character(),
+##   Sex = col_integer(),
+##   `PD ears` = col_integer(),
+##   `PD eyes` = col_integer(),
+##   `PD pivot` = col_integer(),
+##   `PD walk` = col_integer()
+## )</code></pre>
+<pre class="r"><code>litters_pups = janitor::clean_names(litters_pups)
+litters_pups</code></pre>
+<pre><code>## # A tibble: 313 x 6
+##    litter_number   sex pd_ears pd_eyes pd_pivot pd_walk
+##    &lt;chr&gt;         &lt;int&gt;   &lt;int&gt;   &lt;int&gt;    &lt;int&gt;   &lt;int&gt;
+##  1 #85               1       4      13        7      11
+##  2 #85               1       4      13        7      12
+##  3 #1/2/95/2         1       5      13        7       9
+##  4 #1/2/95/2         1       5      13        8      10
+##  5 #5/5/3/83/3-3     1       5      13        8      10
+##  6 #5/5/3/83/3-3     1       5      14        6       9
+##  7 #5/4/2/95/2       1      NA      14        5       9
+##  8 #4/2/95/3-3       1       4      13        6       8
+##  9 #4/2/95/3-3       1       4      13        7       9
+## 10 #2/2/95/3-2       1       4      NA        8      10
+## # ... with 303 more rows</code></pre>
+<p>Look at litters data.</p>
+<pre class="r"><code>head(litters_data)</code></pre>
+<pre><code>## # A tibble: 6 x 8
+##   group litter_number gd0_weight gd18_weight gd_of_birth pups_born_alive
+##   &lt;chr&gt; &lt;chr&gt;              &lt;dbl&gt;       &lt;dbl&gt;       &lt;int&gt;           &lt;int&gt;
+## 1 Con7  #85                 19.7        34.7          20               3
+## 2 Con7  #1/2/95/2           27          42            19               8
+## 3 Con7  #5/5/3/83/3-3       26          41.4          19               6
+## 4 Con7  #5/4/2/95/2         28.5        44.1          19               5
+## 5 Con7  #4/2/95/3-3         NA          NA            20               6
+## 6 Con7  #2/2/95/3-2         NA          NA            20               6
+## # ... with 2 more variables: pups_dead_birth &lt;int&gt;, pups_survive &lt;int&gt;</code></pre>
+<pre class="r"><code>tail(litters_data)</code></pre>
+<pre><code>## # A tibble: 6 x 8
+##   group litter_number gd0_weight gd18_weight gd_of_birth pups_born_alive
+##   &lt;chr&gt; &lt;chr&gt;              &lt;dbl&gt;       &lt;dbl&gt;       &lt;int&gt;           &lt;int&gt;
+## 1 Low8  #79                 25.4        43.8          19               8
+## 2 Low8  #100                20          39.2          20               8
+## 3 Low8  #4/84               21.8        35.2          20               4
+## 4 Low8  #108                25.6        47.5          20               8
+## 5 Low8  #99                 23.5        39            20               6
+## 6 Low8  #110                25.5        42.7          20               7
+## # ... with 2 more variables: pups_dead_birth &lt;int&gt;, pups_survive &lt;int&gt;</code></pre>
+<pre class="r"><code>skimr::skim(litters_data)</code></pre>
+<pre><code>## Skim summary statistics
+##  n obs: 49 
+##  n variables: 8 
+## 
+## -- Variable type:character ----------------------------------------------------------
+##       variable missing complete  n min max empty n_unique
+##          group       0       49 49   4   4     0        6
+##  litter_number       0       49 49   3  15     0       49
+## 
+## -- Variable type:integer ------------------------------------------------------------
+##         variable missing complete  n  mean   sd p0 p25 p50 p75 p100
+##      gd_of_birth       0       49 49 19.65 0.48 19  19  20  20   20
+##  pups_born_alive       0       49 49  7.35 1.76  3   6   8   8   11
+##  pups_dead_birth       0       49 49  0.33 0.75  0   0   0   0    4
+##     pups_survive       0       49 49  6.41 2.05  1   5   7   8    9
+##      hist
+##  &lt;U+2585&gt;&lt;U+2581&gt;&lt;U+2581&gt;&lt;U+2581&gt;&lt;U+2581&gt;&lt;U+2581&gt;&lt;U+2581&gt;&lt;U+2587&gt;
+##  &lt;U+2582&gt;&lt;U+2582&gt;&lt;U+2583&gt;&lt;U+2583&gt;&lt;U+2587&gt;&lt;U+2585&gt;&lt;U+2581&gt;&lt;U+2581&gt;
+##  &lt;U+2587&gt;&lt;U+2582&gt;&lt;U+2581&gt;&lt;U+2581&gt;&lt;U+2581&gt;&lt;U+2581&gt;&lt;U+2581&gt;&lt;U+2581&gt;
+##  &lt;U+2582&gt;&lt;U+2582&gt;&lt;U+2583&gt;&lt;U+2583&gt;&lt;U+2585&gt;&lt;U+2587&gt;&lt;U+2587&gt;&lt;U+2585&gt;
+## 
+## -- Variable type:numeric ------------------------------------------------------------
+##     variable missing complete  n  mean   sd   p0   p25   p50   p75 p100
+##   gd0_weight      15       34 49 24.38 3.28 17   22.3  24.1  26.67 33.4
+##  gd18_weight      17       32 49 41.52 4.05 33.4 38.88 42.25 43.8  52.7
+##      hist
+##  &lt;U+2581&gt;&lt;U+2583&gt;&lt;U+2587&gt;&lt;U+2587&gt;&lt;U+2587&gt;&lt;U+2586&gt;&lt;U+2581&gt;&lt;U+2581&gt;
+##  &lt;U+2582&gt;&lt;U+2583&gt;&lt;U+2583&gt;&lt;U+2587&gt;&lt;U+2586&gt;&lt;U+2582&gt;&lt;U+2581&gt;&lt;U+2581&gt;</code></pre>
 </div>
 
 
