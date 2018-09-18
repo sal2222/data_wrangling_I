@@ -67,3 +67,28 @@ litters_data = read_csv(file = "./data/FAS_litters.csv",
 litters_data
 ```
 
+Take a look at pups!
+
+```{r}
+pups_data = read_csv("./data/FAS_pups.csv", col_types = "ciiiii")
+pups_data = janitor::clean_names(pups_data)
+skimr::skim(pups_data)
+```
+
+
+## Other file formats
+
+Import mlb data from Excel
+```{r read mlb data}
+mlb11_data = readxl::read_excel("data/mlb11.xlsx")
+head(mlb11_data, 5)
+
+mlb_subset = readxl::read_excel("data/mlb11.xlsx", range = "A1:E17")
+```
+
+Read in pulse data from SAS format using "haven" package
+```{r import pulse data}
+pulse_data = haven::read_sas("./data/public_pulse_data.sas7bdat")
+head(pulse_data, 5)
+```
+
