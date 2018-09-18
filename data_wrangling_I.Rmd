@@ -1,0 +1,21 @@
+---
+title: "data_import_examples"
+author: "Stephen Lewandowski"
+date: "September 18, 2018"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+library(tidyverse)
+```
+
+## Import FAS csv files
+
+Import my first csv.
+```{r import FAS csv}
+litters_data = read_csv(file = "./data/FAS_litters.csv")
+
+```
+
