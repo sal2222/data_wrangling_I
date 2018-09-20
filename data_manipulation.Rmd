@@ -26,6 +26,22 @@ filter(pups_data, sex == 1)
 filter(pups_data, sex == 2, pd_walk < 11)
 ```
 
+## Mutate
+## Arrange
+```{r}
+#?arrange
+```
+
+## Pipe
+ 
+ Illustrate placeholder use with `lm`
+ 
+```{r}
+
+#piped_data %>%
+#lm(gd18_weight ~ gd0_weight, data = .)
+```
+ 
 
 
 
