@@ -1,0 +1,94 @@
+---
+title: "data_import_examples"
+author: "Stephen Lewandowski"
+date: "September 18, 2018"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+library(tidyverse)
+```
+
+## Import FAS csv files
+
+Import my first csv.
+```{r import FAS csv}
+litters_data = read_csv(file = "./data/FAS_litters.csv")
+litters_data = janitor::clean_names(litters_data)
+litters_data
+```
+```{r import FAS pups}
+litters_pups = read_csv(file = "./data/FAS_pups.csv")
+litters_pups = janitor::clean_names(litters_pups)
+litters_pups
+```
+
+Look at litters data.
+
+```{r inspect litters data}
+head(litters_data)
+tail(litters_data)
+
+skimr::skim(litters_data)
+```
+read_cv options, skip rows.
+
+```{r read_csv options}
+litters_data = read_csv(file = "./data/FAS_litters.csv",
+  skip = 10, col_names = FALSE)
+litters_data
+```
+
+Parse columns.
+
+```{r parse columns}
+litters_data = read_csv(file = "./data/FAS_litters.csv",
+  col_types = cols(
+    Group = col_character(),
+    `Litter Number` = col_character(),
+    `GD0 weight` = col_double(),
+    `GD12 weight` = col_double(),
+    `GD of Birth` = col_integer(),
+    `Pups born alive` = col_integer(),
+    `Pups dead @ birth` = col_integer(),
+    `Pups survive` = col_integer()
+  )
+)
+```
+
+Parse column shorthand code.
+
+```{r parse shorthand}
+litters_data = read_csv(file = "./data/FAS_litters.csv",
+  col_types = "ccddiiii"
+)
+litters_data
+```
+
+Take a look at pups!
+
+```{r}
+pups_data = read_csv("./data/FAS_pups.csv", col_types = "ciiiii")
+pups_data = janitor::clean_names(pups_data)
+skimr::skim(pups_data)
+```
+
+
+## Other file formats
+
+Import mlb data from Excel
+```{r read mlb data}
+mlb11_data = readxl::read_excel("data/mlb11.xlsx")
+head(mlb11_data, 5)
+
+mlb_subset = readxl::read_excel("data/mlb11.xlsx", range = "A1:E17")
+```
+
+Read in pulse data from SAS format using "haven" package
+```{r import pulse data}
+pulse_data = haven::read_sas("./data/public_pulse_data.sas7bdat")
+head(pulse_data, 5)
+```
+
