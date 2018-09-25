@@ -131,6 +131,9 @@ $(document).ready(function () {
 
 <div id="tidy-data" class="section level2">
 <h2>Tidy data</h2>
+</div>
+<div id="pulse-dataset" class="section level2">
+<h2>Pulse dataset</h2>
 <pre class="r"><code>library(tidyverse)</code></pre>
 <pre><code>## -- Attaching packages -------------------------------------------- tidyverse 1.2.1 --</code></pre>
 <pre><code>## v ggplot2 3.0.0     v purrr   0.2.5
@@ -151,6 +154,23 @@ $(document).ready(function () {
   View</code></pre>
 <pre><code>## Warning: attributes are not identical across measure variables;
 ## they will be dropped</code></pre>
+</div>
+<div id="litters-dataset" class="section level2">
+<h2>Litters dataset</h2>
+<p>Read-in and clean data</p>
+<pre class="r"><code>litters_data = 
+  read_csv(&quot;./data/FAS_litters.csv&quot;, col_types = &quot;ccddiiii&quot;) %&gt;% 
+  janitor::clean_names() %&gt;%
+  separate(group, into = c(&quot;dose&quot;, &quot;day_of_tx&quot;), sep = 3) %&gt;%
+  mutate(dose = tolower(dose),
+         wt_gain = gd18_weight - gd0_weight) %&gt;%
+  arrange(litter_number)</code></pre>
+<p>Gather by gd #</p>
+<pre class="r"><code>litters_data %&gt;% 
+  select(litter_number, ends_with(&quot;weight&quot;)) %&gt;% 
+  gather(key = gd, value = weight, gd0_weight:gd18_weight) %&gt;% 
+  mutate(gd = recode(gd, &quot;gd0_weight&quot; = 0, &quot;gd18_weight&quot; = 18)) %&gt;%
+  View</code></pre>
 </div>
 
 
