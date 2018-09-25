@@ -165,12 +165,122 @@ $(document).ready(function () {
   mutate(dose = tolower(dose),
          wt_gain = gd18_weight - gd0_weight) %&gt;%
   arrange(litter_number)</code></pre>
-<p>Gather by gd #</p>
+<p>Gather by gestational day</p>
 <pre class="r"><code>litters_data %&gt;% 
   select(litter_number, ends_with(&quot;weight&quot;)) %&gt;% 
   gather(key = gd, value = weight, gd0_weight:gd18_weight) %&gt;% 
   mutate(gd = recode(gd, &quot;gd0_weight&quot; = 0, &quot;gd18_weight&quot; = 18)) %&gt;%
   View</code></pre>
+</div>
+<div id="spread" class="section level2">
+<h2>Spread</h2>
+<p>Creae <code>analysis_result</code></p>
+<pre class="r"><code>analysis_result = tibble(
+  group = c(&quot;treatment&quot;, &quot;treatment&quot;, &quot;placebo&quot;, &quot;placebo&quot;),
+  time = c(&quot;pre&quot;, &quot;post&quot;, &quot;pre&quot;, &quot;post&quot;),
+  mean = c(4, 8, 3.5, 4)
+)</code></pre>
+<p>Make it readable:</p>
+<pre class="r"><code>analysis_result %&gt;% 
+  spread(key = time, value = mean) %&gt;% 
+knitr::kable()</code></pre>
+<table>
+<thead>
+<tr class="header">
+<th align="left">group</th>
+<th align="right">post</th>
+<th align="right">pre</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">placebo</td>
+<td align="right">4</td>
+<td align="right">3.5</td>
+</tr>
+<tr class="even">
+<td align="left">treatment</td>
+<td align="right">8</td>
+<td align="right">4.0</td>
+</tr>
+<tr class="odd">
+<td align="left">## LOTR bind</td>
+<td align="right">ing row</td>
+<td align="right">s</td>
+</tr>
+</tbody>
+</table>
+<p>Read in RotR data:</p>
+<pre class="r"><code>fellowship_ring = readxl::read_excel(&quot;./data/LotR_Words.xlsx&quot;, range = &quot;B3:D6&quot;) %&gt;%
+  mutate(movie = &quot;fellowship_ring&quot;)
+
+two_towers = readxl::read_excel(&quot;./data/LotR_Words.xlsx&quot;, range = &quot;F3:H6&quot;) %&gt;%
+  mutate(movie = &quot;two_towers&quot;)
+
+return_king = readxl::read_excel(&quot;./data/LotR_Words.xlsx&quot;, range = &quot;J3:L6&quot;) %&gt;%
+  mutate(movie = &quot;return_king&quot;)</code></pre>
+<p>Stack tables with <code>bind_rows</code>, create final LotR data</p>
+<pre class="r"><code>lotr_tidy = bind_rows(fellowship_ring, two_towers, return_king) %&gt;%
+  janitor::clean_names() %&gt;%
+  gather(key = sex, value = words, female:male) %&gt;%
+  mutate(race = tolower(race)) %&gt;% 
+  select(movie, everything()) 
+
+lotr_tidy</code></pre>
+<pre><code>## # A tibble: 18 x 4
+##    movie           race   sex    words
+##    &lt;chr&gt;           &lt;chr&gt;  &lt;chr&gt;  &lt;dbl&gt;
+##  1 fellowship_ring elf    female  1229
+##  2 fellowship_ring hobbit female    14
+##  3 fellowship_ring man    female     0
+##  4 two_towers      elf    female   331
+##  5 two_towers      hobbit female     0
+##  6 two_towers      man    female   401
+##  7 return_king     elf    female   183
+##  8 return_king     hobbit female     2
+##  9 return_king     man    female   268
+## 10 fellowship_ring elf    male     971
+## 11 fellowship_ring hobbit male    3644
+## 12 fellowship_ring man    male    1995
+## 13 two_towers      elf    male     513
+## 14 two_towers      hobbit male    2463
+## 15 two_towers      man    male    3589
+## 16 return_king     elf    male     510
+## 17 return_king     hobbit male    2673
+## 18 return_king     man    male    2459</code></pre>
+</div>
+<div id="join-data" class="section level2">
+<h2>Join data</h2>
+<p>Import pups and litter data:</p>
+<pre class="r"><code>pup_data = read_csv(&quot;./data/FAS_pups.csv&quot;, col_types = &quot;ciiiii&quot;) %&gt;%
+  janitor::clean_names() %&gt;%
+  mutate(sex = recode(sex, `1` = &quot;male&quot;, `2` = &quot;female&quot;)) 
+
+litter_data = read_csv(&quot;./data/FAS_litters.csv&quot;, col_types = &quot;ccddiiii&quot;) %&gt;%
+  janitor::clean_names() %&gt;%
+  select(-pups_survive) %&gt;%
+  mutate(
+    wt_gain = gd18_weight - gd0_weight,
+    group = tolower(group))</code></pre>
+<p>Create joined data:</p>
+<pre class="r"><code>FAS_data = left_join(pup_data, litter_data, by = &quot;litter_number&quot;)
+FAS_data</code></pre>
+<pre><code>## # A tibble: 313 x 13
+##    litter_number sex   pd_ears pd_eyes pd_pivot pd_walk group gd0_weight
+##    &lt;chr&gt;         &lt;chr&gt;   &lt;int&gt;   &lt;int&gt;    &lt;int&gt;   &lt;int&gt; &lt;chr&gt;      &lt;dbl&gt;
+##  1 #85           male        4      13        7      11 con7        19.7
+##  2 #85           male        4      13        7      12 con7        19.7
+##  3 #1/2/95/2     male        5      13        7       9 con7        27  
+##  4 #1/2/95/2     male        5      13        8      10 con7        27  
+##  5 #5/5/3/83/3-3 male        5      13        8      10 con7        26  
+##  6 #5/5/3/83/3-3 male        5      14        6       9 con7        26  
+##  7 #5/4/2/95/2   male       NA      14        5       9 con7        28.5
+##  8 #4/2/95/3-3   male        4      13        6       8 con7        NA  
+##  9 #4/2/95/3-3   male        4      13        7       9 con7        NA  
+## 10 #2/2/95/3-2   male        4      NA        8      10 con7        NA  
+## # ... with 303 more rows, and 5 more variables: gd18_weight &lt;dbl&gt;,
+## #   gd_of_birth &lt;int&gt;, pups_born_alive &lt;int&gt;, pups_dead_birth &lt;int&gt;,
+## #   wt_gain &lt;dbl&gt;</code></pre>
 </div>
 
 
